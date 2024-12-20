@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forest with Falling Snowflakes</title>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="./css/styles.css">
+    <style>
+        body {
+            margin: 0;
+            background-color: #131212;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        header, footer {
+            flex-shrink: 0;
+        }
+        canvas {
+            display: block;
+            flex-grow: 1;
+        }
+    </style>
+</head>
+<body>
+
+<header class="head">
+    <nav id="mySidePanel" class="sidepanel">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <a href="index.html">Home</a>
+        <a href="about.html">About Us</a>
+        <a href="services.html">Services</a>
+        <a href="portfolio.html">Portfolio</a>
+        <a href="blog.html">Blog</a>
+        <a href="contact.html">Contact</a>
+    </nav>
+    <button class="openbtn" onclick="openNav()">&#9776; Navigation</button>
+    <img src="./img/Vexan.svg" alt="Vexan Studio's Logo">
+    <h1>Our Portfolio</h1>
+</header>
+
+<canvas id="snowCanvas"></canvas>
+
+<footer class="foot">
+    <p>All rights reserved. &copy;2024 Vexan Studio's</p>
+</footer>
+
+<script>
+    const canvas = document.getElementById('snowCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const snowflakes = [];
+    const trees = [];
+
+    function drawTree(x, y, size) {
+        ctx.fillStyle = 'green';
+        ctx.beginPath();
+        ctx.moveTo(x, y - size * 3);
+        ctx.lineTo(x - size, y);
+        ctx.lineTo(x + size, y);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.moveTo(x, y - size * 2);
+        ctx.lineTo(x - size * 0.8, y + size);
+        ctx.lineTo(x + size * 0.8, y + size);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.moveTo(x, y - size);
+        ctx.lineTo(x - size * 0.6, y + size * 2);
+        ctx.lineTo(x + size * 0.6, y + size * 2);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.fillStyle = 'brown';
+        ctx.fillRect(x - size * 0.2, y + size * 2, size * 0.4, size);
+    }
+
+    function createTrees() {
+        const treeCount = 50; // Adjust the number of trees here
+        for (let i = 0; i < treeCount; i++) {
+            const x = Math.random() * canvas.width;
+            const y = Math.random() * canvas.height;
+            const size = Math.random() * 20 + 10;
+            trees.push({ x, y, size });
+        }
+    }
+
+    function drawTrees() {
+        trees.forEach(tree => {
+            drawTree(tree.x, tree.y, tree.size);
+        });
+    }
+
+    function createSnowflakes() {
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height;
+        const radius = Math.random() * 4 + 1;
+        const speed = Math.random() * 1 + 0.5;
+        snowflakes.push({ x, y, radius, speed });
+    }
+
+    function drawSnowflakes() {
+        ctx.fillStyle = 'white';
+        ctx.beginPath();
+        snowflakes.forEach(snowflake => {
+            ctx.moveTo(snowflake.x, snowflake.y);
+            ctx.arc(snowflake.x, snowflake.y, snowflake.radius, 0, Math.PI * 2);
+        });
+        ctx.fill();
+    }
+
+    function updateSnowflakes() {
+        snowflakes.forEach(snowflake => {
+            snowflake.y += snowflake.speed;
+            if (snowflake.y > canvas.height) {
+                snowflake.y = 0;
+                snowflake.x = Math.random() * canvas.width;
+            }
+        });
+    }
+
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawTrees();
+        drawSnowflakes();
+        updateSnowflakes();
+        requestAnimationFrame(animate);
+    }
+
+    createTrees();
+    setInterval(createSnowflakes, 50);
+    animate();
+</script>
+
+<script src="./js/sidepanel.js"></script>
+</body>
+</html>
